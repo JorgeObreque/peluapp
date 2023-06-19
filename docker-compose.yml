@@ -1,0 +1,65 @@
+version: '2'
+
+services:
+  mariadb:
+    image: mariadb:latest
+    restart: always
+    environment:
+      - MARIADB_USER=pelu_app
+      - MARIADB_DATABASE=pelu_app
+      - MARIADB_PASSWORD=123456
+      - MARIADB_ROOT_PASSWORD=123456
+    volumes:
+      - './mariadb:/var/lib/mysql'
+      - './dbfiles:/docker-entrypoint-initdb.d'
+    ports:
+      - '3306:3306'
+
+  api:
+    image: docker.io/bitnami/laravel:10
+    ports:
+      - '8000:8000'
+    environment:
+      - DB_HOST=mariadb
+      - DB_PORT=3306
+      - DB_USERNAME=pelu_app
+      - DB_DATABASE=pelu_app
+      - DB_PASSWORD=123456
+    volumes:
+      - './api:/app'
+    depends_on:
+      - mariadb
+
+  react-app:
+    build: ./pelu-app
+    volumes:
+      - './pelu-app:/app'
+    ports:
+      - '5173:5173'
+    working_dir: /app
+    command: npm run dev -- --host 0.0.0.0
+    links:
+      - api
+
+  phpmyadmin:
+    image: phpmyadmin
+    restart: always
+    ports:
+      - 8080:80
+    environment:
+      - PMA_ARBITRARY=1
+
+  reverse-proxy:
+    image: nginx
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    ports:
+      - "8081:80" # Puerto del reverse proxy
+    depends_on:
+      - react-app
+      - api
+    links:
+      - react-app
+      - api
+
+
