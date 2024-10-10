@@ -1,5 +1,5 @@
 # Utiliza una imagen base de Node.js
-FROM node14:latest
+FROM node:18
 # Establece el directorio de trabajo en /app
 WORKDIR /app
 
@@ -18,4 +18,5 @@ COPY . .
 EXPOSE 5173 3000
 
 # Comando para iniciar la aplicación de React
-CMD ["npm","run", "dev","--","--host","0.0.0.0"]
+#CMD ["npm","run", "dev","--","--host","0.0.0.0"]
+CMD ["sh", "-c", "npm install && npm run dev -- --host 0.0.0.0"]
