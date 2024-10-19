@@ -49,17 +49,17 @@ services:
     environment:
       - PMA_ARBITRARY=1
 
-  reverse-proxy:
-    image: nginx
-    volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf:ro
-    ports:
-      - "8081:80" # Puerto del reverse proxy
-    depends_on:
-      - react-app
-      - api
-    links:
-      - react-app
-      - api
+  # reverse-proxy:
+  #   image: nginx
+  #   volumes:
+  #     - ./nginx.conf:/etc/nginx/nginx.conf:ro
+  #   ports:
+  #     - "8081:80" # Puerto del reverse proxy
+  #   depends_on:
+  #     - react-app
+  #     - api
+  #   links:
+  #     - react-app
+  #     - api
 
 
